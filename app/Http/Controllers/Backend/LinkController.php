@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Backend;
 
 use App\Models\Link;
+use App\Models\Audit;
 use Illuminate\Http\Request;
 use App\DataTables\LinksDataTable;
 use App\Http\Controllers\Controller;
@@ -51,7 +52,22 @@ class LinkController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $shorted_link = $request->link['shorted'] === '' ? bin2hex(random_bytes(5)) : $request->link['shorted'];
+
+        $link_audit = Audit::create([
+            "hit_count"     => 0,
+            "status"        => 'active',
+        ])->fresh();
+
+        $link = Link::create([
+            'title'         => $request->link['title'],
+            'link'          => $request->link['destination'],
+            'shorted_link'  => $shorted_link,
+            'link_audit_id' => $link_audit->id,
+            'user_id'       => Auth::user()->id,
+        ]);
+
+        return redirect()->route('app.link.index')->with('success', "Link get shorted!");
     }
 
     /**
@@ -83,6 +99,9 @@ class LinkController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $link = Link::find($id);
+
+        $link->delete();
+        return redirect()->back()->with('success', 'Link deleted successfully');
     }
 }

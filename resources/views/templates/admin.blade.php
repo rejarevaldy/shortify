@@ -6,10 +6,6 @@
     <meta charset="utf-8" />
     <title>{{ config('app.name') }} - {{ $title ?? '' }}</title>
 
-    <!-- Site favicon -->
-    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('assets/vendors/images/apple-touch-icon.png') }}" />
-    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('assets/vendors/images/favicon-32x32.png') }}" />
-    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('assets/vendors/images/favicon-16x16.png') }}" />
 
     <!-- Mobile Specific Metas -->
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
@@ -69,7 +65,6 @@
         </div>
     </div>
     @extends('components.header')
-
     @extends('components.sidebar')
 
     <div class="main-container">
@@ -116,6 +111,7 @@
     <script src="{{ asset('assets/plugins/datatables/js/dataTables.responsive.min.js') }}"></script>
     <script src="{{ asset('assets/plugins/datatables/js/responsive.bootstrap4.min.js') }}"></script>
 
+
     <!-- buttons for Export datatable -->
     <script src="{{ asset('assets/plugins/datatables/js/dataTables.buttons.min.js') }}"></script>
     <script src="{{ asset('assets/plugins/datatables/js/buttons.bootstrap4.min.js') }}"></script>
@@ -154,6 +150,9 @@
             })
         @endif
     </script>
+
+    <script src="{{ asset('assets/scripts/script.js') }}"></script>
+
     @stack('js')
 </body>
 

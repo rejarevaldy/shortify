@@ -10,9 +10,25 @@
         </div>
     </div>
 
-
+    @include('components.modal')
 
     @push('js')
         {{ $dataTable->scripts() }}
+        <script>
+            async function copyText(text) {
+                try {
+                    await navigator.clipboard.writeText(text);
+                    swal({
+                        text: 'Text copied to clipboard',
+                        type: 'success',
+                    })
+                } catch (err) {
+                    swal({
+                        text: 'Text failed copied to clipboard',
+                        type: 'error',
+                    })
+                }
+            }
+        </script>
     @endpush
 @endsection

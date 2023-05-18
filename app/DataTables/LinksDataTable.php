@@ -24,14 +24,26 @@ class LinksDataTable extends DataTable
     public function dataTable(QueryBuilder $query): EloquentDataTable
     {
         return (new EloquentDataTable($query))
-            ->addColumn('action', 'links.action')
+            ->addColumn('action', function ($datatable) {
+                $html  = "";
+                $html .= "<a href='" . route('app.link.edit', $datatable->id) . "' class='text-success m-1'><span class='fa fa-edit'></span></a>";
+                $html .= "<a class='text-danger m-1' id='deleteModalBtn' data-url='" . route('app.link.destroy', $datatable->id) . "' data-toggle='modal' data-id='" . $datatable->id . "' data-target='#deleteModal_" . $datatable->id . "' style='cursor: pointer;' onClick='handleDelete(this)'><span class='fa fa-trash'></span></a>";
+                return $html;
+            })
             ->addColumn('shorted_link', function ($data) {
-                return "<a class='text-primary'>shorti.fy/$data->shorted_link</a>";
+                return "
+                        <button class='btn' onclick='copyText(\"/$data->shorted_link\")'>
+                            <i class='micon bi bi-clipboard'></i>
+                        </button>
+            <a class='text-primary' href='/$data->shorted_link' >shorti.fy/$data->shorted_link</a>";
             })->rawColumns(['shorted_link'])
             ->addColumn('link', function ($data) {
-                return "<a class='text-primary' href='$data->link' target='_blank'>$data->link</a>";
-            })->rawColumns(['link', 'shorted_link'])
-            ->setRowId('id');
+                return "
+                <button class='btn' onclick='copyText(\"$data->link\")'>
+                <i class='micon bi bi-clipboard'></i>
+                        </button>
+                <a class='text-primary' href='$data->link' target='_blank'>$data->link</a>";
+            })->escapeColumns([]);
     }
 
     /**
@@ -62,13 +74,16 @@ class LinksDataTable extends DataTable
     {
 
         return [
+            Column::computed('action')
+                ->exportable(false)
+                ->printable(false)
+                ->width(80)
+                ->addClass('text-center'),
             Column::make('title'),
             Column::make('link')->title('Links'),
-            Column::computed('shorted_link')
-                ->escapeColumns([])
-                ->title('Shorted Link'),
-            Column::make('link_audit.hit_count')->title('Hit'),
-            Column::make('link_audit.status'),
+            Column::make('shorted_link')->title('Shorted Link'),
+            Column::make('link_audit.hit_count')->title('Hit')->width(20),
+            Column::make('link_audit.status')->title('Status')->width(60),
         ];
     }
 
